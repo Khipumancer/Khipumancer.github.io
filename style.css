@@ -14,7 +14,7 @@ body {
      
   
     font: normal 75% Arial, Helvetica, sans-serif;
- background: linear-gradient(to bottom, rgb(0,20,38) 100%, rgb(2,55,86) );
+ background: linear-gradient(to bottom, rgb(0,20,38) 100%, rgb(2,55,86) 150%);
     display: flex;
     
    /*background-color: #070057;*/
