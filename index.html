@@ -2,6 +2,8 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
+	</head>
+<body>
   <title>Cuarto Horripilante</title>
 <div class="container py-5">
   <div class="output" id="output">
@@ -9,14 +11,35 @@
     <p></p>
   </div>
 </div>
-	<script type="text/javascript">
+	<div class="content">
+  <button id="myBtn" onclick="myFunction()">Play</button>
+   <button id="myBtn2" class="float-left submit-button" >Enter Site</button>
+   
+  <script type="text/javascript">
     document.getElementById("myBtn2").onclick = function () {
         location.href = "https://singingtextiles.github.io/index2.html";
     };
 </script>
+  
+ 
 
-<script>
+   <script>
+  var video = document.getElementById("myVideo");
+var btn = document.getElementById("myBtn");
 
+function myFunction() {
+  if (video.paused) {
+    video.play();
+    btn.innerHTML = "Pause";
+  } else {
+    video.pause();
+    btn.innerHTML = "Play";
+  }
+}
+</script>
+		
+		
+		</div>
 var ge1doot = ge1doot || {
 	
 	
