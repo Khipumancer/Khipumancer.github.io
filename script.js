@@ -1,97 +1,94 @@
-$function() {
-  // ==== on load ====
-  window.addEventListener('load', function() {
-    "use strict";
-    var faces, localTransform = [];
-    // ==== init script ====
-    var screen = ge1doot.screen.init("screen", null, true);
-    var pointer = screen.pointer.init({
-      move: function() {
-        if (pointer.drag.y > 270) pointer.drag.y = 270;
-        if (pointer.drag.y < -270) pointer.drag.y = -270;
-      }
-    });
-    faces = document.getElementById("scene").getElementsByTagName("img");
-    // ==== Easing ====
-    function Ease(speed, val) {
-      this.speed = speed;
-      this.target = val;
-      this.value = val;
-    }
-    Ease.prototype.ease = function(target) {
-      this.value += (target - this.value) * this.speed;
-    }
-    // ==== camera ====
-    var camera = {
-      angle: {
-        x: 0,
-        y: 0,
-        ease: {
-          x: 0,
-          y: 0
-        }
-      },
-      pos: {
-        x: 0,
-        z: 0
-      },
-      vel: {
-        x: 0.1,
-        z: 0.1
-      },
-      fov: new Ease(0.01, 300),
-      move: function() {
-        this.angle.y = -(this.angle.ease.y += (pointer.drag.x - this.angle.ease.y) * 0.06) / 3;
-        this.angle.x = (this.angle.ease.x += (pointer.drag.y - this.angle.ease.x) * 0.06) / 3;
-        this.fov.ease(pointer.active ? 300 : 500);
-        var a = this.angle.y * Math.PI / 180;
-        var x = -Math.sin(a) * this.vel.x;
-        var z = Math.cos(a) * this.vel.z;
-        this.pos.x += x;
-        this.pos.z += z;
-        if (pointer.active) {
-          if ((this.pos.x > 190 && x > 0) || (this.pos.x < -190 && x < 0)) this.vel.x *= 0.9;
-          else {
-            if (this.vel.x < 0.1) this.vel.x = 1;
-            if (this.vel.x < 5) this.vel.x *= 1.1;
-          }
-          if ((this.pos.z > 190 && z > 0) || (this.pos.z < -190 && z < 0)) this.vel.z *= 0.9;
-          else {
-            if (this.vel.z < 0.1) this.vel.z = 1;
-            if (this.vel.z < 5) this.vel.z *= 1.1;
-          }
+// values to keep track of the number of letters typed, which quote to use. etc. Don't change these values.
+var i = 0,
+    a = 0,
+    isBackspacing = false,
+    isParagraph = false;
+
+// Typerwrite text content. Use a pipe to indicate the start of the second line "|".  
+var textArray = [
+  "These sculptures are intended, first, to be invisible, since they are underground; |", 
+  "Second, they can never be built: they have been studied so that they can never be made.", 
+  "The one in Lima is an electronic doll, with ramifications on all sides,",
+  "that does nothing but repeat and accumulate all the memory of universal poetry. ",
+  "Once it's done, which will happen in 2010, it will explode. The result will therefore be catastrophic. ",
+  "I have called it 'Horrifying Sculpture'|Jorge Eduardo Eielson, 1987/88",
+  
+];
+
+// Speed (in milliseconds) of typing.
+var speedForward = 100, //Typing Speed
+    speedWait = 1000, // Wait between typing and backspacing
+    speedBetweenLines = 1000, //Wait between first and second lines
+    speedBackspace = 25; //Backspace Speed
+
+//Run the loop
+typeWriter("output", textArray);
+
+function typeWriter(id, ar) {
+  var element = $("#" + id),
+      aString = ar[a],
+      eHeader = element.children("h1"), //Header element
+      eParagraph = element.children("p"); //Subheader element
+  
+  // Determine if animation should be typing or backspacing
+  if (!isBackspacing) {
+    
+    // If full string hasn't yet been typed out, continue typing
+    if (i < aString.length) {
+      
+      // If character about to be typed is a pipe, switch to second line and continue.
+      if (aString.charAt(i) == "|") {
+        isParagraph = true;
+        eHeader.removeClass("cursor");
+        eParagraph.addClass("cursor");
+        i++;
+        setTimeout(function(){ typeWriter(id, ar); }, speedBetweenLines);
+        
+      // If character isn't a pipe, continue typing.
+      } else {
+        // Type header or subheader depending on whether pipe has been detected
+        if (!isParagraph) {
+          eHeader.text(eHeader.text() + aString.charAt(i));
         } else {
-          this.vel.x *= 0.9;
-          this.vel.z *= 0.9;
+          eParagraph.text(eParagraph.text() + aString.charAt(i));
         }
-        a = Math.cos(this.angle.x * Math.PI / 180);
-        var mx = -(1 * Math.cos((this.angle.y - 90) * Math.PI / 180) * a) * (500 - this.fov.value * 0.5);
-        var mz = -(1 * Math.sin((this.angle.y - 90) * Math.PI / 180) * a) * (500 - this.fov.value * 0.5);
-        var my = Math.sin(this.angle.x * Math.PI / 180) * 200;
-        return "perspective(" + this.fov.value + "px) rotateX(" + this.angle.x + "deg) " + "rotateY(" + this.angle.y + "deg) translateX(" + (this.pos.x + mx) + "px) translateY(" + my + "px) translateZ(" + (this.pos.z + mz) + "px)";
+        i++;
+        setTimeout(function(){ typeWriter(id, ar); }, speedForward);
       }
+      
+    // If full string has been typed, switch to backspace mode.
+    } else if (i == aString.length) {
+      
+      isBackspacing = true;
+      setTimeout(function(){ typeWriter(id, ar); }, speedWait);
+      
     }
-    // ==== init faces ====
-    for (var i = 0, n = faces.length; i < n; i++) {
-      var elem = faces[i];
-      var s = elem.getAttribute("data-transform");
-      elem.style.transform = s;
-      elem.style.webkitTransform = s;
-      elem.style.visibility = "visible";
-      localTransform.push(s);
-    }
-    // ==== main loop ====
-    function run() {
-      requestAnimationFrame(run);
-      var globalcamera = camera.move();
-      // ==== anim faces ====
-      for (var i = 0, elem; elem = faces[i]; i++) {
-        var s = globalcamera + localTransform[i];
-        elem.style.transform = s;
-        elem.style.webkitTransform = s;
+    
+  // If backspacing is enabled
+  } else {
+    
+    // If either the header or the paragraph still has text, continue backspacing
+    if (eHeader.text().length > 0 || eParagraph.text().length > 0) {
+      
+      // If paragraph still has text, continue erasing, otherwise switch to the header.
+      if (eParagraph.text().length > 0) {
+        eParagraph.text(eParagraph.text().substring(0, eParagraph.text().length - 1));
+      } else if (eHeader.text().length > 0) {
+        eParagraph.removeClass("cursor");
+        eHeader.addClass("cursor");
+        eHeader.text(eHeader.text().substring(0, eHeader.text().length - 1));
       }
+      setTimeout(function(){ typeWriter(id, ar); }, speedBackspace);
+    
+    // If neither head or paragraph still has text, switch to next quote in array and start typing.
+    } else { 
+      
+      isBackspacing = false;
+      i = 0;
+      isParagraph = false;
+      a = (a + 1) % ar.length; //Moves to next position in array, always looping back to 0
+      setTimeout(function(){ typeWriter(id, ar); }, 50);
+      
     }
-    // ==== start animation ====
-    requestAnimationFrame(run);
-  }, false);
-}();
+  }
+}
