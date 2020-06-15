@@ -1,4 +1,5 @@
 // values to keep track of the number of letters typed, which quote to use. etc. Don't change these values.
+ "use strict";
 var i = 0,
     a = 0,
     isBackspacing = false,
@@ -24,7 +25,7 @@ var speedForward = 100, //Typing Speed
 //Run the loop
 typeWriter("output", textArray);
 
-$function typeWriter(id, ar) {
+! function typeWriter(id, ar) {
   var element = $("#" + id),
       aString = ar[a],
       eHeader = element.children("h1"), //Header element
