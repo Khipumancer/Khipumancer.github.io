@@ -3,10 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>Cuarto Horripilante</title>
-	<audio autoplay="autoplay">
-     <source src="http://play.onet4u.com/nazrenz.mp3" />     
- </audio>
+<!-- START SOUND CODE V4.1a HTML5 -->
+<script type="text/javascript">
 
+// PLAYER VARIABLES
+
+var mp3snd = "voices/AIelson.mp3";
+
+document.write('<audio autoplay="autoplay">');
+document.write('<source src="'+mp3snd+'" type="audio/mpeg">');
+document.write('<!--[if lt IE 9]>');
+document.write('<bgsound src="'+mp3snd+'" loop="1">');
+document.write('<![endif]-->');
+document.write('</audio>');
+
+</script>
+<br>
+<!-- END SOUND CODE V4.1a -->
 
 
 
