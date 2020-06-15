@@ -24,7 +24,7 @@ var speedForward = 100, //Typing Speed
 //Run the loop
 typeWriter("output", textArray);
 
-function typeWriter(id, ar) {
+$function typeWriter(id, ar) {
   var element = $("#" + id),
       aString = ar[a],
       eHeader = element.children("h1"), //Header element
