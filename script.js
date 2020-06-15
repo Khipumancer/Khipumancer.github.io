@@ -1,4 +1,102 @@
-"use strict";
+! function() {
+  // ==== on load ====
+  window.addEventListener('load', function() {
+    "use strict";
+    var faces, localTransform = [];
+    // ==== init script ====
+    var screen = ge1doot.screen.init("screen", null, true);
+    var pointer = screen.pointer.init({
+      move: function() {
+        if (pointer.drag.y > 270) pointer.drag.y = 270;
+        if (pointer.drag.y < -270) pointer.drag.y = -270;
+      }
+    });
+    faces = document.getElementById("scene").getElementsByTagName("img");
+    // ==== Easing ====
+    function Ease(speed, val) {
+      this.speed = speed;
+      this.target = val;
+      this.value = val;
+    }
+    Ease.prototype.ease = function(target) {
+      this.value += (target - this.value) * this.speed;
+    }
+    // ==== camera ====
+    var camera = {
+      angle: {
+        x: 0,
+        y: 0,
+        ease: {
+          x: 0,
+          y: 0
+        }
+      },
+      pos: {
+        x: 0,
+        z: 0
+      },
+      vel: {
+        x: 0.1,
+        z: 0.1
+      },
+      fov: new Ease(0.01, 300),
+      move: function() {
+        this.angle.y = -(this.angle.ease.y += (pointer.drag.x - this.angle.ease.y) * 0.06) / 3;
+        this.angle.x = (this.angle.ease.x += (pointer.drag.y - this.angle.ease.x) * 0.06) / 3;
+        this.fov.ease(pointer.active ? 300 : 500);
+        var a = this.angle.y * Math.PI / 180;
+        var x = -Math.sin(a) * this.vel.x;
+        var z = Math.cos(a) * this.vel.z;
+        this.pos.x += x;
+        this.pos.z += z;
+        if (pointer.active) {
+          if ((this.pos.x > 190 && x > 0) || (this.pos.x < -190 && x < 0)) this.vel.x *= 0.9;
+          else {
+            if (this.vel.x < 0.1) this.vel.x = 1;
+            if (this.vel.x < 5) this.vel.x *= 1.1;
+          }
+          if ((this.pos.z > 190 && z > 0) || (this.pos.z < -190 && z < 0)) this.vel.z *= 0.9;
+          else {
+            if (this.vel.z < 0.1) this.vel.z = 1;
+            if (this.vel.z < 5) this.vel.z *= 1.1;
+          }
+        } else {
+          this.vel.x *= 0.9;
+          this.vel.z *= 0.9;
+        }
+        a = Math.cos(this.angle.x * Math.PI / 180);
+        var mx = -(1 * Math.cos((this.angle.y - 90) * Math.PI / 180) * a) * (500 - this.fov.value * 0.5);
+        var mz = -(1 * Math.sin((this.angle.y - 90) * Math.PI / 180) * a) * (500 - this.fov.value * 0.5);
+        var my = Math.sin(this.angle.x * Math.PI / 180) * 200;
+        return "perspective(" + this.fov.value + "px) rotateX(" + this.angle.x + "deg) " + "rotateY(" + this.angle.y + "deg) translateX(" + (this.pos.x + mx) + "px) translateY(" + my + "px) translateZ(" + (this.pos.z + mz) + "px)";
+      }
+    }
+    // ==== init faces ====
+    for (var i = 0, n = faces.length; i < n; i++) {
+      var elem = faces[i];
+      var s = elem.getAttribute("data-transform");
+      elem.style.transform = s;
+      elem.style.webkitTransform = s;
+      elem.style.visibility = "visible";
+      localTransform.push(s);
+    }
+    // ==== main loop ====
+    function run() {
+      requestAnimationFrame(run);
+      var globalcamera = camera.move();
+      // ==== anim faces ====
+      for (var i = 0, elem; elem = faces[i]; i++) {
+        var s = globalcamera + localTransform[i];
+        elem.style.transform = s;
+        elem.style.webkitTransform = s;
+      }
+    }
+    // ==== start animation ====
+    requestAnimationFrame(run);
+  }, false);
+}();
+
+/**"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -13,7 +111,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var main;
-var Main = /** @class */ (function () {
+var Main = /** @class  (function () {
     function Main() {
         var _this = this;
         var interval = function () {
@@ -35,7 +133,7 @@ var Main = /** @class */ (function () {
     };
     return Main;
 }());
-var ViewManager = /** @class */ (function () {
+var ViewManager = /** @class  (function () {
     function ViewManager() {
         //
         this._dragPointList = [];
@@ -50,7 +148,7 @@ var ViewManager = /** @class */ (function () {
         this.resize();
     }
     ViewManager.prototype.enterFrame = function () {
-        /**/
+        
         this._lineManager.enterFrame();
         var n = this._movePointList.length;
         for (var i = 0; i < n; i++) {
@@ -161,7 +259,7 @@ var ViewManager = /** @class */ (function () {
     ViewManager.DISTANCE = screen.availWidth / 30;
     return ViewManager;
 }());
-var LineManager = /** @class */ (function () {
+var LineManager = /** @class  (function () {
     function LineManager(g) {
         this._lineList = [];
         this._layer = g;
@@ -179,7 +277,7 @@ var LineManager = /** @class */ (function () {
                 //  let line: LineObject = new LineObject(this._layer, startPoint, endPoint);
                 // lineObject.draw(this._layer, startPoint, 1000);
                 /*  let line: LineObject = new LineObject(this._layer, ViewManager.countY, endPoint);
-                    this.line;*/
+                    this.line;
             }
         }
         n = pointList.length - ViewManager.countX;
@@ -208,7 +306,7 @@ var LineManager = /** @class */ (function () {
     };
     return LineManager;
 }());
-var LineObject = /** @class */ (function () {
+var LineObject = /** @class  (function () {
     function LineObject(g, startPoint, endPoint) {
         this._g = g;
         this._path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -232,7 +330,7 @@ var LineObject = /** @class */ (function () {
     return LineObject;
 }());
 //https://gist.github.com/eitanavgil/1c7f6e442476948ea7230523c2919bfe
-var Dispatcher = /** @class */ (function () {
+var Dispatcher = /** @class  (function () {
     function Dispatcher() {
         this.events = {};
     }
@@ -265,7 +363,7 @@ var Dispatcher = /** @class */ (function () {
     };
     return Dispatcher;
 }());
-var DragPoint = /** @class */ (function (_super) {
+var DragPoint = /** @class  (function (_super) {
     __extends(DragPoint, _super);
     function DragPoint(g) {
         var _this = _super.call(this) || this;
@@ -355,7 +453,7 @@ var DragPoint = /** @class */ (function (_super) {
     };
     return DragPoint;
 }(Dispatcher));
-var PinPoint = /** @class */ (function (_super) {
+var PinPoint = /** @class  (function (_super) {
     __extends(PinPoint, _super);
     function PinPoint(g) {
         var _this = _super.call(this, g) || this;
@@ -367,7 +465,7 @@ var PinPoint = /** @class */ (function (_super) {
     };
     return PinPoint;
 }(DragPoint));
-var MovePoint = /** @class */ (function (_super) {
+var MovePoint = /** @class (function (_super) {
     __extends(MovePoint, _super);
     function MovePoint(g) {
         var _this = _super.call(this, g) || this;
@@ -419,12 +517,12 @@ var MovePoint = /** @class */ (function (_super) {
     };
     return MovePoint;
 }(DragPoint));
-var EventData = /** @class */ (function () {
+var EventData = /** @class  (function () {
     function EventData() {
     }
     return EventData;
 }());
 window.addEventListener("load", function () {
     main = new Main();
-});
+});-->
 /*particlesJS("particles-js", {"particles":{"number":{"value":595,"density":{"enable":true,"value_area":6084.19526099531}},"color":{"value":"#ffffff"},"shape":{"type":"circle","stroke":{"width":3,"color":"#fcfc79"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":0.19169382329163306,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":true,"distance":83.3451405615796,"color":"#ffffff","opacity":1,"width":0.833451405615796},"move":{"enable":true,"speed":3.333805622463184,"direction":"bottom","random":false,"straight":true,"out_mode":"bounce","bounce":false,"attract":{"enable":true,"rotateX":1750.2479517931715,"rotateY":7084.336947734266}}},"interactivity":{"detect_on":".count-particles","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":84.45945945945938,"duration":0.4},/*"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true});var count_particles, stats, update; stats = new Stats; stats.setMode(0); stats.domElement.style.position = 'absolute'; stats.domElement.style.left = '0px'; stats.domElement.style.top = '0px'; document.body.appendChild(stats.domElement); count_particles = document.querySelector('.js-count-particles'); update = function() { stats.begin(); stats.end(); if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) { count_particles.innerText = window.pJSDom[0].pJS.particles.array.length; } requestAnimationFrame(update); }; requestAnimationFrame(update);;*/
