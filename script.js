@@ -1,4 +1,4 @@
-! function() {
+$function() {
   // ==== on load ====
   window.addEventListener('load', function() {
     "use strict";
