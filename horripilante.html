@@ -2,6 +2,54 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
+	<style>
+* {
+  box-sizing: border-box;
+}
+
+
+
+.content {
+  position: fixed;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #f1f1f1;
+  width: 100%;
+  padding: 20px;
+	index:2
+}
+
+#myBtn {
+  width: 200px;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+	index:2
+}
+
+#myBtn:hover {
+  background: #ddd;
+  color: black;
+}
+  #myBtn2 {
+  width: 200px;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+	  index:2
+}
+
+#myBtn2:hover {
+  background: #ddd;
+  color: yellow;
+}
+</style>
   <title>Cuarto Horripilante</title>
 
 
@@ -167,16 +215,37 @@ var ge1doot = ge1doot || {
 <!--partial <audio autoplay> <source src="voices/AIelson.mp3" type="audio/mpeg"></audio> -->
   <script  src="js/script.js"></script>
 
-	<audio class="foo">
-    <source src="voices/AIelson.mp3"></source>
-   
-</audio>			    
-						    
+<audio autoplay="autoplay" unmuted>
+  <source src="voices/AIelson.mp3" type="audio/mpeg">
+  
+</audio>
 
-    <!--partial <audio autoplay src="voices/AIelson.mp3">   Your browser does not support the <code>audio</code> element </audio>-->
-<script>var audio = require('simple-audio/index.js');
-audio.playSound('foo');
-							</script>
+<div class="content">
+  <button id="myBtn" onclick="myFunction()">Play</button>
+   <button id="myBtn2" class="float-left submit-button" >Enter Site</button>
+   
+  <script type="text/javascript">
+    document.getElementById("myBtn2").onclick = function () {
+        location.href = "https://singingtextiles.github.io/index2.html";
+    };
+</script>
+  
+ 
+
+   <script>
+  var audio;
+var btn = document.getElementById("myBtn");
+
+function myFunction() {
+  if (audio.paused) {
+    audio.play();
+    btn.innerHTML = "Pause";
+  } else {
+    audio.pause();
+    btn.innerHTML = "Play";
+  }
+}
+</script>
 									   
 
 </div>
