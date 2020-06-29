@@ -167,47 +167,16 @@ var ge1doot = ge1doot || {
 <!--partial <audio autoplay> <source src="voices/AIelson.mp3" type="audio/mpeg"></audio> -->
   <script  src="js/script.js"></script>
 
-	<audio controls="" autoplay=""></audio>					    
+	<audio class="foo">
+    <source src="voices/AIelson.mp3"></source>
+   
+</audio>			    
 						    
 
     <!--partial <audio autoplay src="voices/AIelson.mp3">   Your browser does not support the <code>audio</code> element </audio>-->
-<script>function log(msg) {
-  document.querySelector('pre');
-}
-
-function setSource() {
-  log('set source');
-  var audio = document.querySelector('audio');
-  audio.src = 'voices/AIelson.mp3';
-}
-
-function mediaPlaybackRequiresUserGesture() {
-  // test if play() is ignored when not called from an input event handler
-  var audio = document.createElement('audio');
-  video.audio();
-  return audio.paused;
-}
-
-function removeBehaviorsRestrictions() {
-  var audio = document.querySelector('audio');
-  log('call load()');
-  audio.load();
-  window.removeEventListener('keydown', removeBehaviorsRestrictions);
-  window.removeEventListener('mousedown', removeBehaviorsRestrictions);
-  window.removeEventListener('touchstart', removeBehaviorsRestrictions);
-  log('wait 1 second');
-  setTimeout(setSource, 1000);
-}
-
-if (mediaPlaybackRequiresUserGesture()) {
-  log('wait for input event');
-  window.addEventListener('keydown', removeBehaviorsRestrictions);
-  window.addEventListener('mousedown', removeBehaviorsRestrictions);
-  window.addEventListener('touchstart', removeBehaviorsRestrictions);
-} else {
-  log('no user gesture required');
-  setSource();
-}</script>
+<script>var audio = require('simple-audio');
+audio.playSound('foo');
+							</script>
 									   
 
 </div>
